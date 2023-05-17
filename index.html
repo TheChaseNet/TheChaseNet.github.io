@@ -1,17 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Website</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Gamehub</title>
+  <link rel="icon" href="images/profile-pic.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      background-image: url("images/background.jpg");
+      background-size: cover;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 0 80px;
+    }
+    img {
+      max-width: 40%;
+      height: auto;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    #quote {
+      margin-top: 50px;
+      font-style: italic;
+      text-align: center;
+      font-weight: bold;
+      color: white;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <img src="images/background.jpg" class="background-image">
-    <div class="content">
-      <img src="images/profile-pic.jpg" class="profile-pic">
-      <h1>John Doe</h1>
-      <p>Web Developer</p>
-    </div>
+    <img src="images/profile-pic.png" alt="Bruce Rizz">
+    <div id="quote">"Express Yourself."</div>
   </div>
 </body>
 </html>
