@@ -25,19 +25,38 @@
       height: auto;
       border-radius: 50%;
       overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease; /* Add a smooth transition effect */
+    }
+    img:hover {
+      transform: scale(1.1); /* Increase the scale on hover */
+    }
+    img.clicked {
+      transform: scale(0.9); /* Decrease the scale when clicked */
     }
     #quote {
       margin-top: 50px;
       font-style: italic;
       text-align: center;
       font-weight: bold;
-      color: white;
+      color: rgb(255, 255, 255);
     }
   </style>
+  <script>
+    function changeImages() {
+      var backgroundImg = document.querySelector("body");
+      var profileImg = document.querySelector("img");
+
+      backgroundImg.style.backgroundImage = "url('images/background-white.jpg')";
+      profileImg.src = "images/profile-pic-main.png";
+      
+      profileImg.classList.toggle("clicked"); /* Toggle the 'clicked' class */
+    }
+  </script>
 </head>
 <body>
   <div class="container">
-    <img src="images/profile-pic.png" alt="Bruce Rizz">
+    <img src="images/profile-pic.png" alt="Bruce Rizz" onclick="changeImages()">
     <div id="quote">"Express Yourself."</div>
   </div>
 </body>
