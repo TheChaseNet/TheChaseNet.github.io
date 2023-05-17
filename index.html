@@ -2,14 +2,14 @@
 <html>
 <head>
   <title>Gamehub</title>
-  <link rel="icon" href="images/profile-pic.png">
+  <link rel="icon" href="images/pfp-snake.png">
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
       font-size: 18px;
-      background-image: url("images/background.jpg");
+      background-image: url("images/background-snake.jpg");
       background-size: cover;
     }
     .container {
@@ -18,6 +18,8 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      width: 600px; /* Set a fixed width for the container */
+      margin: 0 auto; /* Center the container horizontally */
       padding: 0 80px;
     }
     img {
@@ -26,37 +28,52 @@
       border-radius: 50%;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.3s ease; /* Add a smooth transition effect */
+      transition: transform 0.3s ease;
     }
     img:hover {
-      transform: scale(1.1); /* Increase the scale on hover */
+      transform: scale(1.1);
     }
     img.clicked {
-      transform: scale(0.9); /* Decrease the scale when clicked */
+      transform: scale(0.9);
     }
     #quote {
       margin-top: 50px;
       font-style: italic;
       text-align: center;
       font-weight: bold;
-      color: rgb(255, 255, 255);
+      color: rgba(255, 255, 255);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
   </style>
   <script>
+    var profilePics = [
+      { pfp: "images/pfp-jac.png", background: "images/background-jac.jpg" },
+      { pfp: "images/pfp-snake.png", background: "images/background-snake.jpg" },
+      { pfp: "images/pfp-josh.png", background: "images/background-josh.jpg" },
+      { pfp: "images/pfp-harry.png", background: "images/background-harry.jpg" },
+      { pfp: "images/pfp-archie.png", background: "images/background-archie.jpg" }
+    ];
+
+    function getRandomProfilePic() {
+      var index = Math.floor(Math.random() * profilePics.length);
+      return profilePics[index];
+    }
+
     function changeImages() {
       var backgroundImg = document.querySelector("body");
       var profileImg = document.querySelector("img");
 
-      backgroundImg.style.backgroundImage = "url('images/background-white.jpg')";
-      profileImg.src = "images/profile-pic-main.png";
-      
-      profileImg.classList.toggle("clicked"); /* Toggle the 'clicked' class */
+      var randomProfilePic = getRandomProfilePic();
+      backgroundImg.style.backgroundImage = "url('" + randomProfilePic.background + "')";
+      profileImg.src = randomProfilePic.pfp;
+
+      profileImg.classList.toggle("clicked");
     }
   </script>
 </head>
 <body>
   <div class="container">
-    <img src="images/profile-pic.png" alt="Bruce Rizz" onclick="changeImages()">
+    <img src="images/pfp-snake.png" alt="Snake Rizz" onclick="changeImages()">
     <div id="quote">"Express Yourself."</div>
   </div>
 </body>
