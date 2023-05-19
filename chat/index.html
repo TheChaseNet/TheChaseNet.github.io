@@ -1,65 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chatroom</title>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyBpwCwB1qU9Tr7FWWMRVuucECctVgbBWwU",
-      authDomain: "yolland-chat-c9310.firebaseapp.com",
-      databaseURL: "https://yolland-chat-c9310-default-rtdb.firebaseio.com",
-      projectId: "yolland-chat-c9310",
-      storageBucket: "yolland-chat-c9310.appspot.com",
-      messagingSenderId: "524560224543",
-      appId: "1:524560224543:web:f8c3e06337b4bfce4ba02a",
-      measurementId: "G-TXH2SQKNNX"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    
-    const messagesRef = ref(database, 'messages');
-    
-    function sendMessage() {
-      const messageInput = document.getElementById('message-input');
-      const message = messageInput.value;
-      
-      // Push the message to the database
-      push(messagesRef, {
-        text: message
-      });
-      
-      // Clear the input field
-      messageInput.value = '';
-    }
-    
-    messagesRef.on("child_added", function(snapshot) {
-      const message = snapshot.val();
-      displayMessage(message);
-    });
-    
-    function displayMessage(message) {
-      const chatMessages = document.getElementById('chat-messages');
-      const messageElement = document.createElement('p');
-      messageElement.innerText = message.text;
-      chatMessages.appendChild(messageElement);
-    }
-  </script>
+    <title>Chatroom</title>
+    <!-- Include Firebase JavaScript SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+    <!-- Add your Firebase configuration here -->
+    <script src="firebase-config.js"></script>
 </head>
 <body>
-  <h1>Chatroom</h1>
-  
-  <div id="chat-container">
-    <div id="chat-messages"></div>
-  </div>
-  
-  <input type="text" id="message-input" placeholder="Type your message" />
-  <button onclick="sendMessage()">Send</button>
+    <h1>Chatroom</h1>
+    <div id="chat-container"></div>
+    <form id="message-form">
+        <input type="text" id="name-input" placeholder="Enter your name" required />
+        <input type="text" id="message-input" placeholder="Enter your message" required />
+        <button type="submit">Send</button>
+    </form>
+
+    <!-- Add your JavaScript code here -->
+    <script src="chatroom.js"></script>
 </body>
 </html>
