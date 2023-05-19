@@ -1,12 +1,12 @@
 // Initialize Firebase
 var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDC8zVTiyoN1fNbO8kQxxpyV0tQryfeHwY",
+    authDomain: "yolland-chat.firebaseapp.com",
+    projectId: "yolland-chat",
+    storageBucket: "yolland-chat.appspot.com",
+    messagingSenderId: "240083425940",
+    appId: "1:240083425940:web:9323b769381fff0c457281",
+    measurementId: "G-9Q61Y7R7WT"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

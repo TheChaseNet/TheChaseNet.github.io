@@ -42,3 +42,14 @@ form.addEventListener('submit', function(event) {
 });
 
 // Get the current time in HH:MM format
+function getCurrentTime() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+
+    // Add leading zeros if necessary
+    hours = (hours < 10 ? '0' : '') + hours;
+    minutes = (minutes < 10 ? '0' : '') + minutes;
+
+    return hours + ':' + minutes;
+}
