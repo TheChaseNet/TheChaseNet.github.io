@@ -1,9 +1,23 @@
 var database = firebase.database();
 var chatRef = database.ref('chat');
 
-chatRef.on('child_added', function(snapshot) {
+// Track the message count in localStorage
+const messageCountKey = 'messageCount';
+const rateLimitThreshold = 3; // Maximum number of messages allowed per time frame (e.g., 10 messages per hour)
+const timeFrame = 1000 * 5; // Time frame in milliseconds (e.g., 1 hour)
+
+chatRef.limitToLast(100).on('child_added', function(snapshot) {
   var message = snapshot.val();
   displayMessage(message.time, message.name, message.text);
+
+  // Remove older messages if the message count exceeds the maximum limit
+  var chatContainer = document.getElementById('chat-container');
+  if (chatContainer.children.length > 100) {
+    chatContainer.removeChild(chatContainer.firstChild);
+  }
+
+  // Scroll to the bottom of the chat container
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 });
 
 function displayMessage(time, name, text) {
@@ -65,10 +79,22 @@ form.addEventListener('submit', function(event) {
     return;
   }
 
+  // Check if the message contains any banned words
+  if (containsBannedWords(message)) {
+    alert('Message contains banned words.');
+    return;
+  }
+
   // If the storedUsername is not available or disabled, use the entered username
   if (!storedUsername || nameInput.disabled) {
     localStorage.setItem('username', name);
     nameInput.disabled = true; // Lock the username field after setting the new username
+  }
+
+  // Rate Limit Check
+  if (isRateLimited()) {
+    alert('Rate limit exceeded. Please wait before sending more messages.');
+    return;
   }
 
   var newMessageRef = chatRef.push();
@@ -89,13 +115,97 @@ function getCurrentTime() {
   return hours + ':' + minutes;
 }
 
-// Function to generate a random color based on the username
-function getRandomColor(username) {
-  var colors = ['#FF5733', '#C70039', '#900C3F', '#581845', '#FFC300', '#DAF7A6', '#FF5733', '#C70039', '#900C3F', '#581845', '#FFC300', '#DAF7A6'];
-  var usernameHash = 0;
-  for (var i = 0; i < username.length; i++) {
-    usernameHash += username.charCodeAt(i);
-  }
-  var colorIndex = usernameHash % colors.length;
-  return colors[colorIndex];
+function getRandomColor(name) {
+  var colors = ['#ff0000', '#ffff00', '#ffa500', '#00ff00', '#0000ff', '#800080', '#ff00ff'];
+  var index = hashCode(name) % colors.length;
+  return colors[index];
 }
+
+function hashCode(str) {
+  if (!str) {
+    return 0;
+  }
+
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    var char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash); // Use Math.abs to ensure a positive hash value
+}
+
+function containsBannedWords(message) {
+  // Assuming you have the bannedWords array defined in banned-words.js
+  for (var i = 0; i < bannedWords.length; i++) {
+    if (message.toLowerCase().includes(bannedWords[i].toLowerCase())) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Rate Limit Check
+function isRateLimited() {
+  const currentTime = Date.now();
+
+  // Retrieve the user's message count from localStorage
+  const messageCountData = JSON.parse(localStorage.getItem(messageCountKey)) || { count: 0, lastUpdateTime: currentTime };
+
+  // Calculate the elapsed time since the last message update
+  const elapsedTime = currentTime - messageCountData.lastUpdateTime;
+
+  if (elapsedTime >= timeFrame) {
+    // Reset the message count if the time frame has elapsed
+    messageCountData.count = 1;
+  } else {
+    // Increment the message count if within the time frame
+    messageCountData.count += 1;
+
+    // Check if the user has exceeded the rate limit
+    if (messageCountData.count > rateLimitThreshold) {
+      return true;
+    }
+  }
+
+  // Update the message count and last update time in localStorage
+  messageCountData.lastUpdateTime = currentTime;
+  localStorage.setItem(messageCountKey, JSON.stringify(messageCountData));
+
+  return false;
+}
+
+// Periodically check and delete invalid messages
+function checkMessagesValidity() {
+  var chatRef = database.ref('chat');
+
+  chatRef.once('value', function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      var message = childSnapshot.val();
+      var messageKey = childSnapshot.key;
+
+      var isInvalid = false;
+
+      // Check if the message contains banned words
+      if (containsBannedWords(message.text)) {
+        isInvalid = true;
+      }
+
+      // Check if the message exceeds the character limit
+      if (message.text.length > MAX_MESSAGE_LENGTH) {
+        isInvalid = true;
+      }
+
+      if (isInvalid) {
+        // Delete the invalid message from the database
+        chatRef.child(messageKey).remove();
+      }
+    });
+  });
+}
+
+// Perform the initial check when the user opens the website
+checkMessagesValidity();
+
+// Set up the timer to periodically check every 5 minutes
+setInterval(checkMessagesValidity, 5 * 60 * 1000); // 5 minutes
