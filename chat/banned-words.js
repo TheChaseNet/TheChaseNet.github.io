@@ -69,5 +69,6 @@ var bannedWords = [
   'twat',
   'vagina',
   'wank',
-  'whore'
+  'whore',
+  'ոigger'
 ];
